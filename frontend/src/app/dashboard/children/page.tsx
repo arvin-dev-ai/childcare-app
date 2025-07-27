@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import apiClient from '../../../services/api';
 import { useAuth } from '@/context/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -26,7 +26,7 @@ const ChildrenPage = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:3003/children', {
+        const response = await apiClient.get('/children', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setChildren(response.data);

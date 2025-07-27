@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import axios from 'axios';
+import apiClient from '../../../../../services/api';
 import { useAuth } from '../../../../../context/AuthContext';
+import ManageCenterUsers from '../../../../../components/ManageCenterUsers';
 
 interface ChildcareCenter {
   id: string;
@@ -27,11 +28,12 @@ export default function ManageChildcareCenters() {
   const [newCenterAddress, setNewCenterAddress] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
 
   const fetchGroupDetails = useCallback(async () => {
     if (token && groupId) {
         try {
-                        const response = await axios.get(`http://localhost:3004/childcare-groups/${groupId}`, {
+                        const response = await apiClient.get(`/childcare-groups/${groupId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setGroup(response.data);
@@ -45,7 +47,7 @@ export default function ManageChildcareCenters() {
   const fetchCenters = useCallback(async () => {
     if (token && groupId) {
       try {
-                const response = await axios.get(`http://localhost:3004/childcare-centers/by-group/${groupId}`, {
+                const response = await apiClient.get(`/childcare-centers/by-group/${groupId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCenters(response.data);
@@ -70,8 +72,8 @@ export default function ManageChildcareCenters() {
     setError(null);
 
     try {
-      await axios.post(
-                'http://localhost:3004/childcare-centers',
+      await apiClient.post(
+                '/childcare-centers',
         {
           name: newCenterName,
           address: newCenterAddress,
@@ -88,6 +90,10 @@ export default function ManageChildcareCenters() {
       setError('Failed to create center. You may not have the required permissions.');
       console.error(err);
     }
+  };
+
+  const handleToggleUsers = (centerId: string) => {
+    setSelectedCenterId(prevId => (prevId === centerId ? null : centerId));
   };
 
   if (isLoading) {
@@ -133,9 +139,20 @@ export default function ManageChildcareCenters() {
         {centers.length > 0 ? (
           <ul className="space-y-3">
             {centers.map((center) => (
-              <li key={center.id} className="p-4 border rounded-md">
-                <p className="font-semibold text-lg">{center.name}</p>
-                <p className="text-gray-600">{center.address}</p>
+              <li key={center.id} className="p-4 border rounded-md bg-gray-50 transition-shadow duration-300 hover:shadow-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-lg">{center.name}</p>
+                    <p className="text-gray-600">{center.address}</p>
+                  </div>
+                  <button 
+                    onClick={() => handleToggleUsers(center.id)}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm transition-transform duration-200 transform hover:scale-105"
+                  >
+                    {selectedCenterId === center.id ? 'Hide Users' : 'Manage Users'}
+                  </button>
+                </div>
+                {selectedCenterId === center.id && <ManageCenterUsers centerId={center.id} />}
               </li>
             ))}
           </ul>

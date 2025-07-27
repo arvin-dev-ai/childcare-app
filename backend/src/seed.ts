@@ -7,7 +7,7 @@ import { RolesService } from './roles/roles.service';
 import { Role } from './roles/entities/role.entity';
 import { PermissionsService } from './permissions/permissions.service';
 import { Permission } from './permissions/entities/permission.entity';
-import { ROLES } from './auth/roles.constants';
+import { SUPER_ADMIN } from './auth/roles.constants';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -38,9 +38,9 @@ async function bootstrap() {
 
   // 2. Seed Super Admin Role and Assign Permissions
   console.log('Seeding Super Admin role...');
-  let superAdminRole: Role | null = await rolesService.findOneByName(ROLES.SUPER_ADMIN);
+  let superAdminRole: Role | null = await rolesService.findOneByName(SUPER_ADMIN);
   if (!superAdminRole) {
-    const createdRole = await rolesService.create({ name: ROLES.SUPER_ADMIN, permissionIds: [] });
+    const createdRole = await rolesService.create({ name: SUPER_ADMIN, permissionIds: [] });
     superAdminRole = await rolesService.findOne(createdRole.id);
   }
 
@@ -63,6 +63,17 @@ async function bootstrap() {
     }
   }
   console.log('Super Admin role seeding complete.');
+
+  // 2a. Seed other core roles
+  console.log('Seeding other core roles...');
+  const otherRoles = ['Center Admin', 'Center Manager', 'Educator'];
+  for (const roleName of otherRoles) {
+    let role = await rolesService.findOneByName(roleName);
+    if (!role) {
+      await rolesService.create({ name: roleName, permissionIds: [] });
+    }
+  }
+  console.log('Core roles seeding complete.');
 
   // 3. Seed Super Admin User
   console.log('Seeding Super Admin user...');

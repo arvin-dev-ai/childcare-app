@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES } from '../roles.constants';
+import { SUPER_ADMIN } from '../roles.constants';
 import { CenterMembership } from '../../center-memberships/entities/center-membership.entity';
 
 
@@ -26,7 +26,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // 1. Super Admin has unrestricted access.
-    if (user.role?.name === ROLES.SUPER_ADMIN) {
+    if (user.role?.name === SUPER_ADMIN) {
       return true;
     }
 

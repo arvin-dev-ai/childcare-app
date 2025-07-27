@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
-import axios from 'axios';
+import apiClient from '../services/api';
+
 
 interface User {
   id: string;
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         setToken(storedToken);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         await fetchUserProfile(storedToken);
       } else {
         setLoading(false);
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUserProfile = async (currentToken: string) => {
     try {
-            const response = await axios.get('http://localhost:3004/auth/profile', {
+            const response = await apiClient.get('/auth/profile', {
         headers: { Authorization: `Bearer ${currentToken}` },
       });
       setUser(response.data);
@@ -60,11 +61,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     handleLogout(); // Clear any existing session first
     setLoading(true);
     try {
-            const response = await axios.post('http://localhost:3004/auth/login', { email, password });
+            const response = await apiClient.post('/auth/login', { email, password });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       setToken(access_token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       await fetchUserProfile(access_token);
     } catch (error) {
       console.error('Login failed', error);
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
+    delete apiClient.defaults.headers.common['Authorization'];
   };
 
   return (

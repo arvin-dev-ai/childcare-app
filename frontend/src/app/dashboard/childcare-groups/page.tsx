@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import apiClient from '../../../services/api';
 
 interface ChildcareGroup {
   id: string;
@@ -28,7 +28,7 @@ const ChildcareGroupsPage = () => {
     const fetchGroups = async () => {
       if (token) {
         try {
-                    const response = await axios.get('http://localhost:3004/childcare-groups', {
+                    const response = await apiClient.get('/childcare-groups', {
             headers: { Authorization: `Bearer ${token}` },
           });
           setGroups(response.data);
@@ -46,8 +46,8 @@ const ChildcareGroupsPage = () => {
     if (!newGroupName.trim()) return;
 
     try {
-      const response = await axios.post(
-                'http://localhost:3004/childcare-groups',
+      const response = await apiClient.post(
+                '/childcare-groups',
         { name: newGroupName },
         { headers: { Authorization: `Bearer ${token}` } },
       );
