@@ -22,9 +22,13 @@ export class GroupMembershipsService {
   }
 
   async findByGroup(groupId: string): Promise<GroupMembership[]> {
+    return this.groupMembershipRepository.find({ where: { group: { id: groupId } }, relations: ['user', 'role', 'group'] });
+  }
+
+  async findByUser(userId: string): Promise<GroupMembership[]> {
     return this.groupMembershipRepository.find({
-      where: { groupId },
-      relations: ['user', 'role'],
+      where: { user: { id: userId } },
+      relations: ['group'],
     });
   }
 

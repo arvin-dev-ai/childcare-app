@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @Post('with-membership')
-    @Roles('Super Admin')
+  @Roles('Super Admin', 'Childcare Group Admin')
   createUserWithMembership(
     @Body() createUserWithMembershipDto: CreateUserWithMembershipDto,
   ) {
@@ -48,7 +48,7 @@ export class UsersController {
   }
 
   @Get('by-center/:centerId')
-    @Roles('Super Admin')
+  @Roles('Super Admin', 'Childcare Group Admin')
   findAllByCenter(@Param('centerId') centerId: string) {
     return this.usersService.findAllByCenter(centerId);
   }

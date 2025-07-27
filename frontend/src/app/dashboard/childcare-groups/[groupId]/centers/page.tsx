@@ -19,7 +19,7 @@ interface ChildcareGroup {
 }
 
 export default function ManageChildcareCenters() {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const params = useParams();
   const groupId = params.groupId as string;
 
@@ -107,7 +107,8 @@ export default function ManageChildcareCenters() {
       
       {error && <p className="text-red-500 bg-red-100 p-3 mb-4 rounded-md">{error}</p>}
 
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            {user && (user.role.name === 'Super Admin' || user.role.name === 'Childcare Group Admin') && (
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <h2 className="text-xl font-semibold mb-4">Add New Center</h2>
         <form onSubmit={handleCreateCenter} className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -134,6 +135,7 @@ export default function ManageChildcareCenters() {
           </button>
         </form>
       </div>
+      )}
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Existing Centers</h2>
@@ -146,12 +148,14 @@ export default function ManageChildcareCenters() {
                     <p className="font-semibold text-lg">{center.name}</p>
                     <p className="text-gray-600">{center.address}</p>
                   </div>
+                  {user && (user.role.name === 'Super Admin' || user.role.name === 'Childcare Group Admin') && (
                   <button 
                     onClick={() => handleToggleUsers(center.id)}
                     className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm transition-transform duration-200 transform hover:scale-105"
                   >
                     {selectedCenterId === center.id ? 'Hide Users' : 'Manage Users'}
                   </button>
+                  )}
                 </div>
                 {selectedCenterId === center.id && <ManageCenterUsers centerId={center.id} />}
               </li>

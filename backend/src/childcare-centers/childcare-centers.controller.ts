@@ -12,19 +12,19 @@ export class ChildcareCentersController {
   constructor(private readonly childcareCentersService: ChildcareCentersService) {}
 
   @Post()
-  @Roles('Super Admin')
+  @Roles('Super Admin', 'Childcare Group Admin')
   create(@Body() createChildcareCenterDto: CreateChildcareCenterDto) {
     return this.childcareCentersService.create(createChildcareCenterDto);
   }
 
   @Get()
-  @Roles('Super Admin', 'Center Admin')
+  @Roles('Super Admin', 'Center Admin', 'Childcare Group Admin')
   findAll() {
     return this.childcareCentersService.findAll();
   }
 
   @Get('by-group/:groupId')
-  @Roles('Super Admin', 'Center Admin')
+  @Roles('Super Admin', 'Center Admin', 'Childcare Group Admin')
   findAllByGroup(@Param('groupId', ParseUUIDPipe) groupId: string) {
     return this.childcareCentersService.findAllByGroup(groupId);
   }

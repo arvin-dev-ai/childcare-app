@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { GroupMembershipsService } from './group-memberships.service';
 import { CreateGroupMembershipDto } from './dto/create-group-membership.dto';
 import { CreateUserWithGroupMembershipDto } from './dto/create-user-with-group-membership.dto';
@@ -28,8 +29,15 @@ export class GroupMembershipsController {
   }
 
   @Get('by-group/:groupId')
-    @Roles('Super Admin')
+  @Roles('Super Admin', 'Childcare Group Admin')
   findByGroup(@Param('groupId') groupId: string) {
     return this.groupMembershipsService.findByGroup(groupId);
+  }
+
+  @Get('my-groups')
+  findMyGroups(@Req() req: Request & { user: { userId: string } }) {
+    // The user ID is available from the JWT payload added by JwtAuthGuard
+    const userId = req.user.userId;
+    return this.groupMembershipsService.findByUser(userId);
   }
 }
