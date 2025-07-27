@@ -51,11 +51,10 @@ export default function ManageCenterUsers({ centerId }: ManageCenterUsersProps) 
   const fetchRoles = useCallback(async () => {
     if (!token) return;
     try {
-      const response = await apiClient.get('/roles', {
+      const response = await apiClient.get('/roles/center-assignable', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Filter out Super Admin role as it should not be assignable at the center level
-      setRoles(response.data.filter((role: Role) => role.name !== 'Super Admin'));
+      setRoles(response.data);
     } catch (err) {
       setError('Failed to fetch roles.');
       console.error(err);

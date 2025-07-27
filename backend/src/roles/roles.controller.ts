@@ -32,6 +32,12 @@ export class RolesController {
     return this.rolesService.findAll();
   }
 
+  @Get('center-assignable')
+  @UseGuards(JwtAuthGuard)
+  findCenterAssignableRoles() {
+    return this.rolesService.findCenterAssignableRoles();
+  }
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(SUPER_ADMIN)

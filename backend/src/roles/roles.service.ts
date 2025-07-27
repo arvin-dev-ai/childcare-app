@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, IsNull } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
 import { Permission } from '../permissions/entities/permission.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -21,6 +21,14 @@ export class RolesService {
         childcareGroup: childcareGroupId ? { id: childcareGroupId } : IsNull(),
       },
       relations: ['permissions'],
+    });
+  }
+
+  async findCenterAssignableRoles(): Promise<Role[]> {
+    return this.rolesRepository.find({
+      where: {
+        name: Not(In(['Super Admin', 'Childcare Group Admin'])),
+      },
     });
   }
 
