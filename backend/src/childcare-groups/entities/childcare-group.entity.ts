@@ -1,4 +1,5 @@
 import { ChildcareCenter } from '../../childcare-centers/entities/childcare-center.entity';
+import { GroupMembership } from '../../group-memberships/entities/group-membership.entity';
 import { Role } from '../../roles/entities/role.entity';
 import {
   Entity,
@@ -19,6 +20,9 @@ export class ChildcareGroup {
 
   @OneToMany(() => ChildcareCenter, (center) => center.childcareGroup)
   centers: ChildcareCenter[];
+
+  @OneToMany(() => GroupMembership, (membership) => membership.group)
+  memberships: GroupMembership[];
 
   @OneToMany(() => Role, (role) => role.childcareGroup)
   roles: Role[];

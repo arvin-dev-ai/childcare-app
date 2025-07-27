@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { CenterMembership } from '../../center-memberships/entities/center-membership.entity';
+import { GroupMembership } from '../../group-memberships/entities/group-membership.entity';
 
 @Entity('users')
 export class User {
@@ -25,4 +26,7 @@ export class User {
 
   @OneToMany(() => CenterMembership, (membership) => membership.user)
   centerMemberships: CenterMembership[];
+
+  @OneToMany(() => GroupMembership, (membership) => membership.user)
+  groupMemberships: GroupMembership[];
 }

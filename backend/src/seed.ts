@@ -66,7 +66,7 @@ async function bootstrap() {
 
   // 2a. Seed other core roles
   console.log('Seeding other core roles...');
-  const otherRoles = ['Center Admin', 'Center Manager', 'Educator'];
+  const otherRoles = ['Center Admin', 'Center Manager', 'Educator', 'Childcare Group Admin'];
   for (const roleName of otherRoles) {
     let role = await rolesService.findOneByName(roleName);
     if (!role) {

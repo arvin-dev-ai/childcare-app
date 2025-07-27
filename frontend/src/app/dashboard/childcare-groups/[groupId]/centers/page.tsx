@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import apiClient from '../../../../../services/api';
 import { useAuth } from '../../../../../context/AuthContext';
 import ManageCenterUsers from '../../../../../components/ManageCenterUsers';
+import ManageGroupAdmins from '../../../../../components/ManageGroupAdmins';
 
 interface ChildcareCenter {
   id: string;
@@ -157,9 +158,12 @@ export default function ManageChildcareCenters() {
             ))}
           </ul>
         ) : (
-          <p>No centers found for this group. Add one above.</p>
+          <p>No centers found for this group.</p>
         )}
       </div>
+
+      {/* Group admin management - Placed outside the centers list */}
+      <ManageGroupAdmins groupId={groupId as string} />
     </div>
   );
 }
